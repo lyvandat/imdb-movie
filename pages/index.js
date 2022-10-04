@@ -1,7 +1,10 @@
 import Head from "next/head";
 import Header from "../components/Header";
+import Navigation from "../components/Navigation";
+import Main from "../components/Main";
+import Responses from "../Responses";
 
-export default function Home() {
+export default function Home({ results }) {
   return (
     <div>
       <Head>
@@ -10,7 +13,26 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      {/* Header */}
       <Header />
+
+      {/* Navigation */}
+      <Navigation />
+
+      {/* Main */}
+      <Main results={results} />
     </div>
   );
+}
+
+export async function getServerSideProps(context) {
+  const genre = context.query.genre || "fetchTrending";
+  const response = await fetch(Responses[genre].url);
+  const data = await response.json();
+
+  return {
+    props: {
+      results: data.results,
+    },
+  };
 }
